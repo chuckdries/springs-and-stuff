@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { AsyncButton } from "./AsyncButton";
 import { Checkout } from "./Checkout";
 import { NavContainer } from "./NavContainer";
 import { Switch } from "./Switch";
@@ -13,6 +14,7 @@ function App() {
           Flip the switch!
         </Switch>
         <Checkout />
+        <AsyncButton>Submit</AsyncButton>
       </NavContainer>
     </div>
   );
