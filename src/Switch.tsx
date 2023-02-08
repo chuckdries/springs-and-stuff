@@ -1,12 +1,21 @@
 import { useToggleState } from "react-stately";
 import { AriaSwitchProps, useFocusRing, useSwitch, VisuallyHidden } from "react-aria";
 import { useRef } from "react";
+import { useSpring, animated } from "@react-spring/web";
 
 export function Switch(props: AriaSwitchProps) {
   let state = useToggleState(props);
   let ref = useRef<HTMLInputElement>(null);
   let { inputProps } = useSwitch(props, state, ref);
   let { isFocusVisible, focusProps } = useFocusRing();
+
+  const circleSpring = useSpring({
+    cx: state.isSelected ? 112 : 48
+  })
+
+  const backgroundSpring = useSpring({
+    fill: state.isSelected ? "orange" : "gray"
+  })
 
   return (
     <label
@@ -20,15 +29,15 @@ export function Switch(props: AriaSwitchProps) {
         <input {...inputProps} {...focusProps} ref={ref} />
       </VisuallyHidden>
       <svg width={160} height={96} aria-hidden="true" style={{ marginRight: 4 }}>
-        <rect
+        <animated.rect
           x={16}
           y={16}
           width={128}
           height={64}
           rx={32}
-          fill={state.isSelected ? "orange" : "gray"}
+          fill={backgroundSpring.fill}
         />
-        <circle cx={state.isSelected ? 112 : 48} cy={48} r={20} fill="white" />
+        <animated.circle cx={circleSpring.cx} cy={48} r={20} fill="white" />
         {isFocusVisible && (
           <rect
             x={4}
