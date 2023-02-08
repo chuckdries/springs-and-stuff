@@ -1,3 +1,4 @@
+import { useSpring, animated } from "@react-spring/web";
 import { useState } from "react";
 import { useNumberFormatter } from "react-aria";
 
@@ -5,18 +6,22 @@ export function Checkout() {
   const [price, setPrice] = useState(0);
 
   const nf = useNumberFormatter({
-    style: 'currency',
-    currency: 'USD'
+    style: "currency",
+    currency: "USD",
+  });
+
+  const priceSpring = useSpring({
+    price,
   });
 
   return (
-    <div className="p-2 border border-white rounded">
+    <div className="p-2 border w-[300px] border-white rounded">
       <h2 className="mb-2 text-center">pretend this is a checkout flow</h2>
       <form
         onSubmit={(e) => {
           e.preventDefault();
           // @ts-expect-error ts doesn't know about form target?
-          setPrice(e.target.price.value)
+          setPrice(Number(e.target.price.value));
         }}
         className="flex items-center"
       >
@@ -28,15 +33,15 @@ export function Checkout() {
           className="p-2 mx-2 text-black rounded min-w-0 flex-auto"
           type="number"
         />
-        <button className="rounded border border-white p-2" type="submit">
+        <button className="w-[150px] rounded border border-white p-2" type="submit">
           set price
         </button>
       </form>
-      <hr className="my-2"/>
+      <hr className="my-2" />
       <div className="text-xl flex justify-between">
         <h2>Total</h2>
-        
-        {nf.format(price)}
+
+        <animated.span>{priceSpring.price.to(val => nf.format(val))}</animated.span>
       </div>
     </div>
   );
