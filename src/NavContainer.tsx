@@ -1,7 +1,6 @@
 import { useSpring, animated } from "@react-spring/web";
 import classNames from "classnames";
 import { ReactNode, useState } from "react";
-import { useDrag } from "@use-gesture/react";
 
 interface NavContainerProps {
   children: ReactNode;
@@ -17,21 +16,7 @@ export function NavContainer({ children }: NavContainerProps) {
     setSidebar(!sidebarIsOpen);
   };
 
-  const bind = useDrag(({ down, movement: [mx, my], delta: [dx] }) => {
-    if ((sidebarIsOpen && mx > 0) || (!sidebarIsOpen && mx < 0)) {
-      return;
-    }
-    if (down) {
-      const offset = sidebarSpring.marginLeft.get();
-      sidebarSpring.marginLeft.set(Math.max(-301, Math.min(0, dx + offset)))
-    } else {
-      if (Math.abs(mx) > 100) {
-        toggleSidebar();
-      } else {
-        sidebarSpring.marginLeft.start(sidebarIsOpen ? 0 : -300);
-      }
-    }
-  });
+
 
   return (
     <div className="h-full flex flex-col">
@@ -70,7 +55,7 @@ export function NavContainer({ children }: NavContainerProps) {
         >
           sidebar
         </animated.div>
-        <div style={{ touchAction: 'none' }} {...bind()} className="flex-auto flex flex-col gap-5 items-center">
+        <div style={{ touchAction: 'none' }} className="flex-auto flex flex-col gap-5 items-center">
           {children}
         </div>
       </div>
