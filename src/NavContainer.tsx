@@ -35,7 +35,7 @@ export function NavContainer({ children }: NavContainerProps) {
 
   return (
     <div className="h-full flex flex-col">
-      <div className="h-[50px] bg-slate-500 flex items-center px-2">
+      <div className="h-[50px] flex-shrink-0 bg-slate-500 flex items-center px-2">
         <button
           className={classNames(
             "p-1 border border-white rounded",
