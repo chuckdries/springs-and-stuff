@@ -57,7 +57,7 @@ export function NavContainer({ children }: NavContainerProps) {
           isOpen ? (
             <animated.div
               style={style}
-              className="w-[300px] h-full bg-slate-600 p-2"
+              className="w-[300px] flex-shrink-0 h-full bg-slate-600 p-2"
             >
               sidebar
             </animated.div>
