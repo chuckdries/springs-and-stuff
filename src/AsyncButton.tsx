@@ -1,3 +1,4 @@
+import { useTransition, animated } from "@react-spring/web";
 import classNames from "classnames";
 import { ReactNode, useState } from "react";
 
@@ -55,6 +56,24 @@ const BUTTON_ICON: Record<AsyncButtonState, ReactNode> = {
 
 export function AsyncButton({ children }: AsyncButtonProps) {
   const [buttonState, setButtonState] = useState<AsyncButtonState>("neutral");
+
+  const iconTransition = useTransition(buttonState, {
+    from: (value) => ({
+      marginLeft: value !== 'neutral' ? -32 : 0,
+      opacity: 0,
+      marginRight: value !== 'neutral' ? 8 : 0
+    }),
+    enter: {
+      marginLeft: 0,
+      opacity: 1,
+    },
+    leave: (value) => ({
+      marginLeft: value !== 'neutral' ? -32 : 0,
+      opacity: 0,
+    }),
+    exitBeforeEnter: true,
+  });
+
   const rotateState = () => {
     if (buttonState === "neutral") {
       setButtonState("loading");
@@ -68,7 +87,8 @@ export function AsyncButton({ children }: AsyncButtonProps) {
     if (buttonState === "failed") {
       setButtonState("neutral");
     }
-  }
+  };
+
   return (
     <button
       type="button"
@@ -76,12 +96,18 @@ export function AsyncButton({ children }: AsyncButtonProps) {
         rotateState();
       }}
       className={classNames(
-        "flex items-center text-lg p-3 rounded-lg border-2 transition-all border-green-500 bg-green-600 hover:bg-green-400",
-        buttonState === "loading" && "border-blue-500 bg-blue-600 hover:bg-blue-400",
+        "flex items-center text-lg p-3 rounded-lg border-2 transition-all overflow-hidden border-green-500 bg-green-600 hover:bg-green-400",
+        buttonState === "loading" &&
+          "border-blue-500 bg-blue-600 hover:bg-blue-400",
         buttonState === "failed" && "border-red-500 bg-red-600 hover:bg-red-400"
       )}
     >
-      <span className="mr-2">{BUTTON_ICON[buttonState]}</span> {children}
+      {iconTransition((style, value) => (
+        <animated.span style={style}>
+          {BUTTON_ICON[value]}
+        </animated.span>
+      ))}{" "}
+      {children}
     </button>
   );
 }
