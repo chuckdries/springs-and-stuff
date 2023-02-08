@@ -65,12 +65,16 @@ function NameTag3D({ name }: NameTagProps) {
       {/* TAG */}
       {/* @ts-expect-error shrug */}
       <mesh {...bind()}>
-        <boxGeometry args={[3, 2, 0.1]} />
+        <boxBufferGeometry args={[3, 2, 0.1]} />
         <meshStandardMaterial color="red" />
+      </mesh>
+      <mesh position={[0, 0, -0.1]}>
+        <boxBufferGeometry args={[3, 2, 0.1]} />
+        <meshStandardMaterial color="white" />
       </mesh>
       {/* WHITE STRIPE */}
       <mesh position={[0, -0.45, 0]}>
-        <boxGeometry args={[2.999, 0.9, 0.14]} />
+        <boxBufferGeometry args={[2.999, 0.9, 0.14]} />
         <meshStandardMaterial color="white" />
       </mesh>
       {/* HELLO MY NAME IS TEXT */}
