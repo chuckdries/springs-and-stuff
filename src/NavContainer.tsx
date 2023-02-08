@@ -1,4 +1,4 @@
-import { useSpring, animated } from "@react-spring/web";
+import { useSpring, animated, useTransition } from "@react-spring/web";
 import classNames from "classnames";
 import { ReactNode, useState } from "react";
 
@@ -8,15 +8,21 @@ interface NavContainerProps {
 export function NavContainer({ children }: NavContainerProps) {
   const [sidebarIsOpen, setSidebar] = useState(false);
 
-  const sidebarSpring = useSpring({
-    marginLeft: sidebarIsOpen ? 0 : -300
+  const sidebarTransition = useTransition(sidebarIsOpen, {
+    from: {
+      marginLeft: -300,
+    },
+    enter: {
+      marginLeft: 0,
+    },
+    leave: {
+      marginLeft: -300,
+    },
   });
 
   const toggleSidebar = () => {
     setSidebar(!sidebarIsOpen);
   };
-
-
 
   return (
     <div className="h-full flex flex-col">
@@ -44,18 +50,26 @@ export function NavContainer({ children }: NavContainerProps) {
             />
           </svg>
         </button>
-        <h1 className="flex-auto text-center">
-          Springs demo app!
-        </h1>
+        <h1 className="flex-auto text-center">Springs demo app!</h1>
       </div>
       <div className="flex-auto flex">
-        <animated.div
-          style={sidebarSpring}
-          className="w-[300px] h-full bg-slate-600 p-2"
+        {sidebarTransition((style, isOpen) => 
+          isOpen ? (
+            <animated.div
+              style={style}
+              className="w-[300px] h-full bg-slate-600 p-2"
+            >
+              sidebar
+            </animated.div>
+          ) : (
+            <></>
+          )
+        )}
+
+        <div
+          style={{ touchAction: "none" }}
+          className="flex-auto flex flex-col gap-5 items-center"
         >
-          sidebar
-        </animated.div>
-        <div style={{ touchAction: 'none' }} className="flex-auto flex flex-col gap-5 items-center">
           {children}
         </div>
       </div>
