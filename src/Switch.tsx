@@ -15,10 +15,10 @@ export function Switch(props: AriaSwitchProps) {
   let { inputProps } = useSwitch(props, state, ref);
   let { isFocusVisible, focusProps } = useFocusRing();
 
-  const spring = useSpring({
+  const [spring, springApi] = useSpring(() => ({
     cx: state.isSelected ? 112 : 48,
     fill: state.isSelected ? "orange" : "gray",
-  });
+  }));
 
   const bind = useDrag(
     ({ down, movement: [mx, my], delta: [dx] }) => {
@@ -26,11 +26,19 @@ export function Switch(props: AriaSwitchProps) {
         return;
       }
       if (down) {
-        const offset = spring.cx.get();
-        spring.cx.set(Math.max(48, Math.min(112, offset + dx)));
+        const offset = springApi.;
+        console.log("🚀 ~ file: Switch.tsx:30 ~ Switch ~ offset", offset)
+
+        springApi.set({
+          cx: Math.max(48, Math.min(112, offset[0] + dx))
+        })
         if (Math.abs(mx) > 30) {
           state.toggle();
         }
+      } else {
+        springApi.start({
+          cx: state.isSelected ? 112 : 48
+        })
       }
     },
     {
