@@ -16,7 +16,7 @@ function App() {
         <div
           className="relative h-[100px] w-[200px] flex items-center justify-center bg-red-500 rounded-lg"
           style={{
-            left: count % 2 == 0 ? 0 : '360px'
+            transform: `translateX(${count % 2 === 0 ? '0px' : '355px'})`
           }}
         >
           count is {count % 2 === 0 ? "even" : "odd"}
