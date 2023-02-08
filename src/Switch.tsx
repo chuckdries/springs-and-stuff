@@ -19,23 +19,23 @@ export function Switch(props: AriaSwitchProps) {
       <VisuallyHidden>
         <input {...inputProps} {...focusProps} ref={ref} />
       </VisuallyHidden>
-      <svg width={40} height={24} aria-hidden="true" style={{ marginRight: 4 }}>
+      <svg width={160} height={96} aria-hidden="true" style={{ marginRight: 4 }}>
         <rect
-          x={4}
-          y={4}
-          width={32}
-          height={16}
-          rx={8}
+          x={16}
+          y={16}
+          width={128}
+          height={64}
+          rx={32}
           fill={state.isSelected ? "orange" : "gray"}
         />
-        <circle cx={state.isSelected ? 28 : 12} cy={12} r={5} fill="white" />
+        <circle cx={state.isSelected ? 112 : 48} cy={48} r={20} fill="white" />
         {isFocusVisible && (
           <rect
-            x={1}
-            y={1}
-            width={38}
-            height={22}
-            rx={11}
+            x={4}
+            y={4}
+            width={152}
+            height={88}
+            rx={44}
             fill="none"
             stroke="orange"
             strokeWidth={2}
