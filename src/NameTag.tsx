@@ -11,8 +11,8 @@ interface NameTagProps {
 
 export function NameTag(props: NameTagProps) {
   return (
-    <Canvas style={{ height: 360, width: 600 }}>
-      <PerspectiveCamera makeDefault fov={25} position={[0, 0, 5]} />
+    <Canvas style={{ height: 380, width: 600 }}>
+      <PerspectiveCamera makeDefault fov={28} position={[0, 0, 5]} />
       <ambientLight />
       <pointLight position={[10, 10, 10]} />
       <NameTag3D {...props} />
