@@ -65,11 +65,7 @@ export function NavContainer({ children }: NavContainerProps) {
             <></>
           )
         )}
-
-        <div
-          style={{ touchAction: "none" }}
-          className="flex-auto flex flex-col gap-5 items-center"
-        >
+        <div data-id="NavChildrenContainer" className="flex-auto flex flex-col gap-10 items-center">
           {children}
         </div>
       </div>
