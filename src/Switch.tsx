@@ -11,10 +11,10 @@ export function Switch(props: AriaSwitchProps) {
 
   const circleSpring = useSpring({
     cx: state.isSelected ? 112 : 48,
-    config: {
-      mass: 1,
-      tension: 20
-    }
+    // config: {
+    //   mass: 1,
+    //   tension: 20
+    // }
   })
 
   const backgroundSpring = useSpring({

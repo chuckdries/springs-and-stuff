@@ -9,39 +9,26 @@ interface NavContainerProps {
 export function NavContainer({ children }: NavContainerProps) {
   const [sidebarIsOpen, setSidebar] = useState(false);
 
-  const [sidebarSpring, sidebarSpringApi] = useSpring(() => ({
-    from: {
-      marginLeft: "-300px",
-    },
-  }));
+  const sidebarSpring = useSpring({
+    marginLeft: sidebarIsOpen ? 0 : -300
+  });
 
   const toggleSidebar = () => {
-    sidebarSpringApi.start({
-      to: {
-        marginLeft: sidebarIsOpen ? "-300px" : "0px",
-      },
-    });
     setSidebar(!sidebarIsOpen);
   };
 
-  const bind = useDrag(({ down, movement: [mx, my] }) => {
+  const bind = useDrag(({ down, movement: [mx, my], delta: [dx] }) => {
     if ((sidebarIsOpen && mx > 0) || (!sidebarIsOpen && mx < 0)) {
       return;
     }
     if (down) {
-      const offset = sidebarIsOpen ? 0 : 300;
-      sidebarSpringApi.set({
-        marginLeft: `${Math.max(-301, Math.min(0, mx - offset))}px`
-      })
+      const offset = sidebarSpring.marginLeft.get();
+      sidebarSpring.marginLeft.set(Math.max(-301, Math.min(0, dx + offset)))
     } else {
       if (Math.abs(mx) > 100) {
         toggleSidebar();
       } else {
-        sidebarSpringApi.start({
-          to: {
-            marginLeft: sidebarIsOpen ? '0px' : '-300px'
-          }
-        })
+        sidebarSpring.marginLeft.start(sidebarIsOpen ? 0 : -300);
       }
     }
   });
@@ -52,7 +39,7 @@ export function NavContainer({ children }: NavContainerProps) {
         <button
           className={classNames(
             "p-1 border border-white rounded",
-            sidebarIsOpen && "bg-green-500"
+            sidebarIsOpen && "bg-slate-400"
           )}
           type="button"
           onClick={toggleSidebar}
@@ -73,7 +60,7 @@ export function NavContainer({ children }: NavContainerProps) {
           </svg>
         </button>
         <h1 className="flex-auto text-center">
-          Springs demo app! {sidebarIsOpen.toString()}
+          Springs demo app!
         </h1>
       </div>
       <div className="flex-auto flex">
