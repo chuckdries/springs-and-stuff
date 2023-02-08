@@ -16,7 +16,7 @@ function App() {
           Flip the switch!
         </Switch>
         <Checkout />
-        <AsyncButton>Submit</AsyncButton>
+        {/* <AsyncButton>Submit</AsyncButton> */}
         <div className="flex flex-col items-center">
           <label>
             <span className="mr-2">name:</span>
