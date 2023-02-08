@@ -1,3 +1,4 @@
+import { useSpring, animated } from "@react-spring/web";
 import { ReactNode, useState } from "react";
 
 interface NavContainerProps {
@@ -5,10 +6,19 @@ interface NavContainerProps {
 }
 export function NavContainer({ children }: NavContainerProps) {
   const [sidebar, setSidebar] = useState(false);
+
+  const sidebarSpring = useSpring({
+    marginLeft: sidebar ? "-300px" : "0px",
+  });
+
   return (
     <div className="h-full flex flex-col">
-      <div className="h-[50px] bg-slate-500 flex items-center px-4">
-        <button type="button" onClick={() => setSidebar(!sidebar)}>
+      <div className="h-[50px] bg-slate-500 flex items-center px-2">
+        <button
+          className="p-1 border border-white rounded"
+          type="button"
+          onClick={() => setSidebar(!sidebar)}
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -27,8 +37,15 @@ export function NavContainer({ children }: NavContainerProps) {
         <h1 className="flex-auto text-center">Springs demo app!</h1>
       </div>
       <div className="flex-auto flex">
-      {sidebar && <div className="w-[300px] h-full bg-slate-600 p-2">sidebar</div>}
-      <div className="flex-auto flex flex-col gap-5 items-center">{children}</div>
+        <animated.div
+          style={sidebarSpring}
+          className="w-[300px] h-full bg-slate-600 p-2"
+        >
+          sidebar
+        </animated.div>
+        <div className="flex-auto flex flex-col gap-5 items-center">
+          {children}
+        </div>
       </div>
     </div>
   );
