@@ -1,4 +1,5 @@
-import { Canvas, useThree } from "@react-three/fiber";
+import { Canvas, useThree, useFrame } from "@react-three/fiber";
+import { Vector3, Group } from "three";
 import {
   Text3D,
   Center,
@@ -11,6 +12,7 @@ import { useGesture } from "@use-gesture/react";
 
 import fredokaone from "./assets/Fredoka One_Regular.json?url";
 import januaryshine from "./assets/January Shine_Regular.json?url";
+import { useRef, useState } from "react";
 
 interface NameTagProps {
   name: string;
@@ -46,7 +48,7 @@ function NameTag3D({ name }: NameTagProps) {
     onDrag: ({ down, movement: [mx, my] }) => {
       if (down) {
         rotateSpringApi.set({
-          rotation: [(my * 1.5) / aspect, (mx * 1.5) / aspect],
+          rotation: [my / aspect, mx / aspect],
         });
       } else {
         rotateSpringApi.start({
@@ -56,10 +58,23 @@ function NameTag3D({ name }: NameTagProps) {
     },
   });
 
+  const group = useRef<Group>(null);
+  const [v] = useState(() => new Vector3());
+  useFrame(() => {
+    if (group.current) {
+      const [x, y] = rotateSpring.rotation.get();
+      v.set(x, y, 0);
+      const a = v.length();
+      v.normalize();
+      group.current.setRotationFromAxisAngle(v, a);
+    }
+  });
+
   return (
     <animated.group
       // @ts-ignore
-      rotation={rotateSpring.rotation.to((x, y) => [x, y, 0])}
+      // rotation={rotateSpring.rotation.to((x, y) => [x, y, 0])}
+      ref={group}
     >
       {/* <GizmoViewport position={[0,0,.3]} scale={0.2} /> */}
       {/* TAG */}
