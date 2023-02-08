@@ -1,10 +1,13 @@
-import { useRef } from "react";
-import { Canvas } from "@react-three/fiber";
+import { Canvas, useThree } from "@react-three/fiber";
 import {
   Text3D,
   Center,
   PerspectiveCamera,
+  CameraControls,
+  GizmoViewport,
 } from "@react-three/drei";
+import { useSpring, animated } from "@react-spring/three";
+import { useGesture } from "@use-gesture/react";
 
 import fredokaone from "./assets/Fredoka One_Regular.json?url";
 import januaryshine from "./assets/January Shine_Regular.json?url";
@@ -16,6 +19,7 @@ interface NameTagProps {
 export function NameTag(props: NameTagProps) {
   return (
     <Canvas style={{ height: 360, width: 600 }}>
+      {/* <CameraControls /> */}
       <PerspectiveCamera makeDefault fov={25} position={[0, 0, 5]} />
       <ambientLight />
       <pointLight position={[10, 10, 10]} />
@@ -25,11 +29,42 @@ export function NameTag(props: NameTagProps) {
 }
 
 function NameTag3D({ name }: NameTagProps) {
-  const mesh = useRef(null);
+  const viewport = useThree(({ viewport }) => viewport);
+  const size = useThree(({ size }) => size);
+  const aspect = size.width / viewport.getCurrentViewport().width;
+
+  const [rotateSpring, rotateSpringApi] = useSpring(() => ({
+    rotation: [0, 0],
+    config: {
+      mass: 1,
+      tension: 200,
+      friction: 20,
+    },
+  }));
+
+  const bind = useGesture({
+    onDrag: ({ down, movement: [mx, my] }) => {
+      if (down) {
+        rotateSpringApi.set({
+          rotation: [(my * 1.5) / aspect, (mx * 1.5) / aspect],
+        });
+      } else {
+        rotateSpringApi.start({
+          rotation: [0, 0],
+        });
+      }
+    },
+  });
+
   return (
-    <group>
+    <animated.group
+      // @ts-ignore
+      rotation={rotateSpring.rotation.to((x, y) => [x, y, 0])}
+    >
+      {/* <GizmoViewport position={[0,0,.3]} scale={0.2} /> */}
       {/* TAG */}
-      <mesh ref={mesh}>
+      {/* @ts-expect-error shrug */}
+      <mesh {...bind()}>
         <boxGeometry args={[3, 2, 0.1]} />
         <meshStandardMaterial color="red" />
       </mesh>
@@ -62,6 +97,6 @@ function NameTag3D({ name }: NameTagProps) {
           </Text3D>
         </Center>
       </group>
-    </group>
+    </animated.group>
   );
 }
