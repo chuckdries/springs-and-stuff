@@ -1,7 +1,7 @@
 import { useToggleState } from "react-stately";
 import { AriaSwitchProps, useFocusRing, useSwitch, VisuallyHidden } from "react-aria";
 import { useRef } from "react";
-import { useSpring, animated } from "@react-spring/web";
+import { useSpring, animated, config } from "@react-spring/web";
 
 export function Switch(props: AriaSwitchProps) {
   let state = useToggleState(props);
@@ -10,11 +10,20 @@ export function Switch(props: AriaSwitchProps) {
   let { isFocusVisible, focusProps } = useFocusRing();
 
   const circleSpring = useSpring({
-    cx: state.isSelected ? 112 : 48
+    cx: state.isSelected ? 112 : 48,
+    config: {
+      mass: 1,
+      tension: 20
+    }
   })
 
   const backgroundSpring = useSpring({
-    fill: state.isSelected ? "orange" : "gray"
+    from: {
+      fill: 'gray'
+    },
+    to: {
+      fill: state.isSelected ? "orange" : "gray",
+    }
   })
 
   return (
