@@ -30,7 +30,7 @@ export function NavContainer({ children }: NavContainerProps) {
         {sidebar && (
           <div className="w-[300px] h-full bg-slate-600 p-2">sidebar</div>
         )}
-        <div className="flex-auto flex flex-col gap-10 items-center">
+        <div data-id="NavChildrenContainer" className="flex-auto flex flex-col gap-10 items-center">
           {children}
         </div>
       </div>
