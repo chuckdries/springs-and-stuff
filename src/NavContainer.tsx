@@ -1,23 +1,61 @@
 import { useSpring, animated } from "@react-spring/web";
+import classNames from "classnames";
 import { ReactNode, useState } from "react";
+import { useDrag } from "@use-gesture/react";
 
 interface NavContainerProps {
   children: ReactNode;
 }
 export function NavContainer({ children }: NavContainerProps) {
-  const [sidebar, setSidebar] = useState(false);
+  const [sidebarIsOpen, setSidebar] = useState(false);
 
-  const sidebarSpring = useSpring({
-    marginLeft: sidebar ? "-300px" : "0px",
+  const [sidebarSpring, sidebarSpringApi] = useSpring(() => ({
+    from: {
+      marginLeft: "-300px",
+    },
+  }));
+
+  const toggleSidebar = () => {
+    sidebarSpringApi.start({
+      to: {
+        marginLeft: sidebarIsOpen ? "-300px" : "0px",
+      },
+    });
+    setSidebar(!sidebarIsOpen);
+  };
+
+  const bind = useDrag(({ down, movement: [mx, my] }) => {
+    if ((sidebarIsOpen && mx > 0) || (!sidebarIsOpen && mx < 0)) {
+      return;
+    }
+    if (down) {
+      const offset = sidebarIsOpen ? 0 : 300;
+      sidebarSpringApi.set({
+        marginLeft: `${Math.max(-301, Math.min(0, mx - offset))}px`
+      })
+    } else {
+      if (Math.abs(mx) > 100) {
+        toggleSidebar();
+      } else {
+        sidebarSpringApi.start({
+          to: {
+            marginLeft: sidebarIsOpen ? '0px' : '-300px'
+          }
+        })
+      }
+    }
   });
 
   return (
     <div className="h-full flex flex-col">
       <div className="h-[50px] bg-slate-500 flex items-center px-2">
         <button
-          className="p-1 border border-white rounded"
+          className={classNames(
+            "p-1 border border-white rounded",
+            sidebarIsOpen && "bg-green-500"
+          )}
           type="button"
-          onClick={() => setSidebar(!sidebar)}
+          onClick={toggleSidebar}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -34,7 +72,9 @@ export function NavContainer({ children }: NavContainerProps) {
             />
           </svg>
         </button>
-        <h1 className="flex-auto text-center">Springs demo app!</h1>
+        <h1 className="flex-auto text-center">
+          Springs demo app! {sidebarIsOpen.toString()}
+        </h1>
       </div>
       <div className="flex-auto flex">
         <animated.div
@@ -43,7 +83,7 @@ export function NavContainer({ children }: NavContainerProps) {
         >
           sidebar
         </animated.div>
-        <div className="flex-auto flex flex-col gap-5 items-center">
+        <div style={{ touchAction: 'none' }} {...bind()} className="flex-auto flex flex-col gap-5 items-center">
           {children}
         </div>
       </div>
