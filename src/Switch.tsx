@@ -31,6 +31,8 @@ export function Switch(props: AriaSwitchProps) {
         if (Math.abs(mx) > 30) {
           state.toggle();
         }
+      } else {
+        spring.cx.start(state.isSelected ? 112 : 48,)
       }
     },
     {
