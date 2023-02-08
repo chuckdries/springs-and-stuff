@@ -5,10 +5,11 @@ import { Gallery } from "./Gallery";
 import { NameTag } from "./NameTag";
 import { NavContainer } from "./NavContainer";
 import { Switch } from "./Switch";
+import { Trophy } from "./Trophy";
 
 function App() {
   const [funToggle, setFunToggle] = useState(false);
-  const [name, setName] = useState("World");
+  const [name, setName] = useState("Chuck");
 
   return (
     <div data-id="AppContainer" className="min-h-screen bg-slate-700 text-white">
@@ -30,7 +31,8 @@ function App() {
               onChange={(e) => setName(e.target.value)}
             />
           </label>
-          <NameTag name={name} />
+          {/* <NameTag name={name} /> */}
+          <Trophy name={name} />
         </div>
       </NavContainer>
     </div>
