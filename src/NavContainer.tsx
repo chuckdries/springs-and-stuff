@@ -24,7 +24,7 @@ export function NavContainer({ children }: NavContainerProps) {
             />
           </svg>
         </button>
-        <h1 className="flex-auto text-center">Demo app!</h1>
+        <h1 className="flex-auto text-center">Springs demo app!</h1>
       </div>
       <div className="flex-auto flex">
       {sidebar && <div className="w-[300px] h-full bg-slate-600 p-2">sidebar</div>}
