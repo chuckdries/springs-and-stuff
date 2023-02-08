@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useTransition, animated } from "@react-spring/web";
+import { useEffect, useRef, useState } from "react";
 
 const IMAGES = [
   "/public/000038250035.jpg",
@@ -9,6 +10,7 @@ const IMAGES = [
 
 export function Gallery() {
   const [currentImage, setCurrentImage] = useState(0);
+  const prevImage = usePrevious(currentImage)
 
   const onRightPress = () => {
     console.log("here");
@@ -27,17 +29,36 @@ export function Gallery() {
     }
   };
 
+  const transition = useTransition(currentImage, {
+    from: { x: prevImage < currentImage ? "100%" : "-100%", position: "absolute"},
+    enter: { x: "0%", position: "relative" },
+    leave: { x: prevImage < currentImage ? "-100%" : "100%", position: "absolute"},
+  });
+
   return (
     <div className="flex">
-      <button onClick={onLeftPress} className="hover:bg-white/20">
+      <button onClick={onLeftPress} className="hover:bg-white/20 z-10">
         <ChevronLeft />
       </button>
-      <img className="flex-auto min-w-0" src={IMAGES[currentImage]} />
-      <button onClick={onRightPress} className="hover:bg-white/20">
+      <div className="overflow-hidden flex-auto relative">
+        {transition((style, value) => (
+          // @ts-ignore
+          <animated.img style={style} className="min-w-0" src={IMAGES[value]} />
+        ))}
+      </div>
+      <button onClick={onRightPress} className="hover:bg-white/20 z-10">
         <ChevronRight />
       </button>
     </div>
   );
+}
+
+function usePrevious<T>(value: T) {
+  const ref = useRef(value);
+  useEffect(() => {
+    ref.current = value;
+  }, [value])
+  return ref.current;
 }
 
 function ChevronLeft() {
