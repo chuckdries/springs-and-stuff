@@ -1,4 +1,7 @@
 import { ReactNode, useState } from "react";
+import {NavLink} from 'react-router-dom';
+
+const navLinkClass = ({ isActive }: { isActive: boolean }) => isActive ? 'underline font-bold' : ''
 
 interface NavContainerProps {
   children: ReactNode;
@@ -28,9 +31,14 @@ export function NavContainer({ children }: NavContainerProps) {
       </div>
       <div className="flex-auto flex">
         {sidebar && (
-          <div className="w-[300px] flex-shrink-0 h-[calc(100vh-50px)] bg-slate-600 p-2">sidebar</div>
+          <div className="w-[300px] flex-shrink-0 h-[calc(100vh-50px)] bg-slate-600 p-2 flex flex-col">
+            <NavLink to="/" className={navLinkClass}>Switch</NavLink>
+            <NavLink to="/checkout" className={navLinkClass}>Checkout</NavLink>
+            <NavLink to="/gallery" className={navLinkClass}>Gallery</NavLink>
+            <NavLink to="/trophy" className={navLinkClass}>Trophy</NavLink>
+          </div>
         )}
-        <div data-id="NavChildrenContainer" className="flex-auto flex flex-col gap-10 items-center">
+        <div data-id="NavChildrenContainer" className="flex-auto flex flex-col p-10 items-center">
           {children}
         </div>
       </div>
