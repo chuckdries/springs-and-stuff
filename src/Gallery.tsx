@@ -1,6 +1,7 @@
 import { animated, useSpring } from "@react-spring/web";
 import { useRef, useState } from "react";
 import { useResizeObserver } from "@react-aria/utils";
+import { useDrag } from "@use-gesture/react";
 
 const IMAGES = [
   "/public/000038250035.jpg",
@@ -14,7 +15,6 @@ export function Gallery() {
   const [containerWidth, setContainerWidth] = useState(200);
 
   const onRightPress = () => {
-    console.log("here");
     if (currentImage === IMAGES.length - 1) {
       setCurrentImage(0);
     } else {
@@ -45,6 +45,23 @@ export function Gallery() {
     },
   });
 
+  const bind = useDrag(({down, delta: [dx]}) => {
+    if (down) {
+      const x = imageHolderSpring.x.get() + dx;
+      if (Math.abs(x) > (containerWidth * (IMAGES.length - 1)) || x > 0) {
+        return;
+      }
+      imageHolderSpring.x.set(x);
+    } else {
+      let closestImage = Math.round(Math.abs(((imageHolderSpring.x.get() + containerWidth) / containerWidth) - 1))
+      if (closestImage === currentImage) {
+        imageHolderSpring.x.start(containerWidth - ((currentImage + 1) * containerWidth))
+      } else {
+        setCurrentImage(closestImage)
+      }
+    }
+  })
+
   return (
     <div className="flex w-full max-w-full">
       <button onClick={onLeftPress} className="hover:bg-white/20 z-10">
@@ -55,9 +72,9 @@ export function Gallery() {
         style={{ height: containerWidth / 2.7 }}
         className="overflow-hidden flex-auto relative"
       >
-        <animated.div style={imageHolderSpring} className="flex min-w-0">
+        <animated.div {...bind()} style={imageHolderSpring} className="flex min-w-0">
           {IMAGES.map((image) => (
-            <img src={image} />
+            <img onDragStart={(e) => e.preventDefault()} src={image} />
           ))}
         </animated.div>
       </div>
