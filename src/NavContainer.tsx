@@ -12,16 +12,8 @@ interface NavContainerProps {
 export function NavContainer({ children }: NavContainerProps) {
   const [sidebarIsOpen, setSidebar] = useState(false);
 
-  const sidebarTransition = useTransition(sidebarIsOpen, {
-    from: {
-      marginLeft: -300,
-    },
-    enter: {
-      marginLeft: 0,
-    },
-    leave: {
-      marginLeft: -300,
-    },
+  const sidebarSpring = useSpring({
+    marginLeft: sidebarIsOpen ? 0 : -300,
   });
 
   const toggleSidebar = () => {
@@ -57,29 +49,23 @@ export function NavContainer({ children }: NavContainerProps) {
         <h1 className="flex-auto text-center">Springs demo app!</h1>
       </div>
       <div className="flex-auto flex">
-        {sidebarTransition((style, isOpen) =>
-          isOpen ? (
-            <animated.div
-              style={style}
-              className="w-[300px] flex-shrink-0 h-[calc(100vh-50px)] bg-slate-600 p-2 flex flex-col"
-            >
-              <NavLink to="/" className={navLinkClass}>
-                Switch
-              </NavLink>
-              <NavLink to="/checkout" className={navLinkClass}>
-                Checkout
-              </NavLink>
-              <NavLink to="/gallery" className={navLinkClass}>
-                Gallery
-              </NavLink>
-              <NavLink to="/trophy" className={navLinkClass}>
-                Trophy
-              </NavLink>
-            </animated.div>
-          ) : (
-            <></>
-          )
-        )}
+        <animated.div
+          style={sidebarSpring}
+          className="w-[300px] flex-shrink-0 h-[calc(100vh-50px)] bg-slate-600 p-2 flex flex-col"
+        >
+          <NavLink to="/" className={navLinkClass}>
+            Switch
+          </NavLink>
+          <NavLink to="/checkout" className={navLinkClass}>
+            Checkout
+          </NavLink>
+          <NavLink to="/gallery" className={navLinkClass}>
+            Gallery
+          </NavLink>
+          <NavLink to="/trophy" className={navLinkClass}>
+            Trophy
+          </NavLink>
+        </animated.div>
         <div
           data-id="NavChildrenContainer"
           className="flex-auto flex flex-col p-10 items-center"
