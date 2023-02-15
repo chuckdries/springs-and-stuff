@@ -1,5 +1,6 @@
-import { useTransition, animated } from "@react-spring/web";
-import { useEffect, useRef, useState } from "react";
+import { animated, useSpring } from "@react-spring/web";
+import { useRef, useState } from "react";
+import { useResizeObserver } from "@react-aria/utils";
 
 const IMAGES = [
   "/public/000038250035.jpg",
@@ -10,7 +11,7 @@ const IMAGES = [
 
 export function Gallery() {
   const [currentImage, setCurrentImage] = useState(0);
-  const prevImage = usePrevious(currentImage)
+  const [containerWidth, setContainerWidth] = useState(200);
 
   const onRightPress = () => {
     console.log("here");
@@ -29,22 +30,36 @@ export function Gallery() {
     }
   };
 
-  const transition = useTransition(currentImage, {
-    from: { x: prevImage < currentImage ? "100%" : "-100%", position: "absolute"},
-    enter: { x: "0%", position: "relative" },
-    leave: { x: prevImage < currentImage ? "-100%" : "100%", position: "absolute"},
+  const imageHolderSpring = useSpring({
+    x: containerWidth - ((currentImage + 1) * containerWidth),
+  });
+
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useResizeObserver({
+    ref: containerRef,
+    onResize: () => {
+      if (containerRef.current) {
+        setContainerWidth(containerRef.current.clientWidth);
+      }
+    },
   });
 
   return (
-    <div className="flex">
+    <div className="flex w-full max-w-full">
       <button onClick={onLeftPress} className="hover:bg-white/20 z-10">
         <ChevronLeft />
       </button>
-      <div className="overflow-hidden flex-auto relative">
-        {transition((style, value) => (
-          // @ts-ignore
-          <animated.img style={style} className="min-w-0" src={IMAGES[value]} />
-        ))}
+      <div
+        ref={containerRef}
+        style={{ height: containerWidth / 2.7 }}
+        className="overflow-hidden flex-auto relative"
+      >
+        <animated.div style={imageHolderSpring} className="flex min-w-0">
+          {IMAGES.map((image) => (
+            <img src={image} />
+          ))}
+        </animated.div>
       </div>
       <button onClick={onRightPress} className="hover:bg-white/20 z-10">
         <ChevronRight />
@@ -53,13 +68,6 @@ export function Gallery() {
   );
 }
 
-function usePrevious<T>(value: T) {
-  const ref = useRef(value);
-  useEffect(() => {
-    ref.current = value;
-  }, [value])
-  return ref.current;
-}
 
 function ChevronLeft() {
   return (

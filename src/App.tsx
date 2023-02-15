@@ -21,7 +21,7 @@ function App() {
         {/* <AsyncButton>Submit</AsyncButton> */}
         <Gallery />
         <div className="flex flex-col items-center">
-          <label>
+          {/* <label>
             <span className="mr-2">name:</span>
             <input
               maxLength={8}
@@ -30,7 +30,7 @@ function App() {
               value={name}
               onChange={(e) => setName(e.target.value)}
             />
-          </label>
+          </label> */}
           {/* <NameTag name={name} /> */}
           <Trophy name={name} />
         </div>
