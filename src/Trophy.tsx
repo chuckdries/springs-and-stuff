@@ -20,6 +20,12 @@ import trophyModel from "./assets/low_poly_trophy_m.glb?url";
 import fredokaone from "./assets/Fredoka One_Regular.json?url";
 import { useGesture } from "@use-gesture/react";
 
+import { Globals } from "@react-spring/shared";
+
+Globals.assign({
+  frameLoop: "always",
+});
+
 interface TrophyProps {
   name: string;
 }
