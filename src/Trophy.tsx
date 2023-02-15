@@ -85,6 +85,7 @@ function Trophy3D({ name }: TrophyProps) {
   return (
     <animated.group
       {...bind()}
+      // @ts-ignore
       rotation={rotateSpring.rotation.to((val) => [0, val, 0])}
       ref={group}
       scale={1.2}
