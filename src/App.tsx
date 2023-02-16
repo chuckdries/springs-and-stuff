@@ -1,25 +1,14 @@
 import { useState } from "react";
-import {
-  useLocation,
-  Link,
-  Routes,
-  Route,
-  BrowserRouter,
-} from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 
-import { AsyncButton } from "./AsyncButton";
 import { Checkout } from "./Checkout";
 import { Gallery } from "./Gallery";
-import { NameTag } from "./NameTag";
 import { NavContainer } from "./NavContainer";
 import { Switch } from "./Switch";
 import { Trophy } from "./Trophy";
 
 function App() {
   const [funToggle, setFunToggle] = useState(false);
-  const [name, setName] = useState("Chuck");
-
-  const location = useLocation();
 
   return (
     <div
@@ -38,26 +27,8 @@ function App() {
           />
           <Route path="checkout" element={<Checkout />} />
           <Route path="gallery" element={<Gallery />} />
-          <Route
-            path="trophy"
-            element={
-              <div className="flex flex-col items-center">
-                <label>
-                  <span className="mr-2">name:</span>
-                  <input
-                    maxLength={8}
-                    className="p-2 rounded text-black"
-                    type="text"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                  />
-                </label>
-                <Trophy name={name} />
-              </div>
-            }
-          />
+          <Route path="trophy" element={<Trophy />} />
         </Routes>
-
       </NavContainer>
     </div>
   );
