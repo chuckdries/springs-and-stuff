@@ -10,7 +10,6 @@ import { Trophy } from "./Trophy";
 
 function App() {
   const [funToggle, setFunToggle] = useState(false);
-  const [name, setName] = useState("Chuck");
 
   const location = useLocation();
 
@@ -49,19 +48,7 @@ function App() {
               <Route
                 path="trophy"
                 element={
-                  <div className="flex flex-col items-center">
-                    <label>
-                      <span className="mr-2">name:</span>
-                      <input
-                        maxLength={8}
-                        className="p-2 rounded text-black"
-                        type="text"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                      />
-                    </label>
-                    <Trophy name={name} />
-                  </div>
+                  <Trophy />
                 }
               />
             </Routes>
