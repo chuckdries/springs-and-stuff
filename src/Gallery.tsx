@@ -1,4 +1,7 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
+import { useResizeObserver } from "@react-aria/utils";
+import { useSpring, animated, config } from "@react-spring/web";
+import { useDrag } from "@use-gesture/react";
 
 const IMAGES = [
   "/public/000038250035.jpg",
@@ -9,6 +12,7 @@ const IMAGES = [
 
 export function Gallery() {
   const [currentImage, setCurrentImage] = useState(0);
+  const [containerWidth, setContainerWidth] = useState(200);
 
   const onRightPress = () => {
     console.log("here");
@@ -27,12 +31,63 @@ export function Gallery() {
     }
   };
 
+  const imagePannerSpring = useSpring({
+    x: containerWidth - (currentImage + 1) * containerWidth,
+  });
+
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useResizeObserver({
+    ref: containerRef,
+    onResize: () => {
+      if (containerRef.current) {
+        setContainerWidth(containerRef.current.clientWidth);
+      }
+    },
+  });
+
+  const bind = useDrag(({ down, delta: [dx] }) => {
+    if (down) {
+      const x = imagePannerSpring.x.get() + dx;
+      if (Math.abs(x) > (containerWidth * (IMAGES.length - 1)) || x > 0) {
+        return;
+      }
+      imagePannerSpring.x.set(x);
+    } else {
+      const closestImage = Math.round(
+        Math.abs(
+          (imagePannerSpring.x.get() + containerWidth) / containerWidth - 1
+        )
+      );
+      if (closestImage === currentImage) {
+        imagePannerSpring.x.start(
+          containerWidth - (currentImage + 1) * containerWidth
+        );
+      }
+      setCurrentImage(closestImage);
+    }
+  });
+
   return (
     <div className="flex">
       <button onClick={onLeftPress} className="hover:bg-white/20">
         <ChevronLeft />
       </button>
-      <img className="flex-auto min-w-0" src={IMAGES[currentImage]} />
+      <div
+        ref={containerRef}
+        style={{ height: containerWidth / 2.7 }}
+        className="overflow-hidden flex-auto relative"
+      >
+        <animated.div
+          {...bind()}
+          style={imagePannerSpring}
+          className="flex min-w-0"
+        >
+          {IMAGES.map((image) => (
+            <img onDragStart={(e) => e.preventDefault()} src={image} />
+          ))}
+        </animated.div>
+      </div>
       <button onClick={onRightPress} className="hover:bg-white/20">
         <ChevronRight />
       </button>

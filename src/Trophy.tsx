@@ -13,10 +13,12 @@ import {
   useGLTF,
 } from "@react-three/drei";
 import { GLTF } from "three-stdlib";
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import { useSpring, animated } from "@react-spring/three";
 
 import trophyModel from "./assets/low_poly_trophy_m.glb?url";
 import fredokaone from "./assets/Fredoka One_Regular.json?url";
+import { useGesture } from "@use-gesture/react";
 
 interface TrophyProps {
   name: string;
@@ -60,8 +62,38 @@ function Trophy3D({ name }: TrophyProps) {
   const group = useRef<THREE.Group>(null);
   const { nodes } = useGLTF(trophyModel) as GLTFResult;
 
+  const viewport = useThree(({ viewport }) => viewport);
+  const size = useThree(({ size }) => size);
+  const aspect = size.width / viewport.getCurrentViewport().width;
+
+  const [rotateSpring, rotateSpringApi] = useSpring(() => ({
+    rotation: 0,
+  }));
+
+  const bind = useGesture({
+    onDrag: ({ down, movement: [mx] }) => {
+      if (down) {
+        rotateSpringApi.set({
+          rotation: (mx / 2) / aspect
+        })
+      } else {
+        rotateSpringApi.start({
+          rotation: 0
+        })
+      }
+    }
+  })
+
   return (
-    <group ref={group} scale={1.2} position={[0, -3.5, 0]} dispose={null}>
+    <animated.group
+      {...bind()}
+      // @ts-ignore
+      rotation={rotateSpring.rotation.to((val) => [0, val, 0])}
+      ref={group}
+      scale={1.2}
+      position={[0, -3.5, 0]}
+      dispose={null}
+    >
       {/* trophy */}
       <mesh geometry={nodes.trophy_M.geometry}>
         <meshStandardMaterial color="orange" />
@@ -75,7 +107,7 @@ function Trophy3D({ name }: TrophyProps) {
           {name} <meshStandardMaterial color="white" />
         </Text3D>
       </Center>
-    </group>
+    </animated.group>
   );
 }
 
